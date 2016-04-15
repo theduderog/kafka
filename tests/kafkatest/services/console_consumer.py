@@ -20,7 +20,7 @@ import subprocess
 from ducktape.services.background_thread import BackgroundThreadService
 from ducktape.utils.util import wait_until
 
-from kafkatest.directory_layout.kafka_path import kafka_home
+from kafkatest.directory_layout.kafka_path import create_path_resolver
 from kafkatest.services.monitor.jmx import JmxMixin
 from kafkatest.version.version import TRUNK, LATEST_0_8_2, LATEST_0_9
 
@@ -125,6 +125,7 @@ class ConsoleConsumer(JmxMixin, BackgroundThreadService):
         self.client_id = client_id
         self.print_key = print_key
         self.log_level = "TRACE"
+        self.path = create_path_resolver(self.context)
 
     def prop_file(self, node):
         """Return a string which can be used to create a configuration file appropriate for the given node."""
@@ -153,7 +154,7 @@ class ConsoleConsumer(JmxMixin, BackgroundThreadService):
         args['config_file'] = ConsoleConsumer.CONFIG_FILE
         args['stdout'] = ConsoleConsumer.STDOUT_CAPTURE
         args['jmx_port'] = self.jmx_port
-        args['kafka_dir'] = kafka_home(node)
+        args['console_consumer'] = self.path.script("kafka-console-consumer.sh", node_or_version=node)
         args['broker_list'] = self.kafka.bootstrap_servers(self.security_config.security_protocol)
         args['kafka_opts'] = self.security_config.kafka_opts
 
@@ -161,7 +162,7 @@ class ConsoleConsumer(JmxMixin, BackgroundThreadService):
               "export LOG_DIR=%(log_dir)s; " \
               "export KAFKA_LOG4J_OPTS=\"-Dlog4j.configuration=file:%(log4j_config)s\"; " \
               "export KAFKA_OPTS=%(kafka_opts)s; " \
-              "/opt/%(kafka_dir)s/bin/kafka-console-consumer.sh " \
+              "%(console_consumer)s " \
               "--topic %(topic)s --consumer.config %(config_file)s" % args
 
         if self.new_consumer:
