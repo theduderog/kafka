@@ -14,6 +14,7 @@
 # limitations under the License.
 
 from ducktape.services.background_thread import BackgroundThreadService
+from kafkatest.directory_layout.kafka_path import create_path_resolver
 
 
 class PerformanceService(BackgroundThreadService):
@@ -22,6 +23,7 @@ class PerformanceService(BackgroundThreadService):
         super(PerformanceService, self).__init__(context, num_nodes)
         self.results = [None] * self.num_nodes
         self.stats = [[] for x in range(self.num_nodes)]
+        self.path = create_path_resolver(self.context)
 
     def clean_node(self, node):
         node.account.kill_process("java", clean_shutdown=False, allow_fail=True)
