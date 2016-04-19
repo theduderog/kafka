@@ -110,6 +110,7 @@ class ConsumerEventHandler(object):
         else:
             return None
 
+
 class VerifiableConsumer(BackgroundThreadService):
     PERSISTENT_ROOT = "/mnt/verifiable_consumer"
     STDOUT_CAPTURE = os.path.join(PERSISTENT_ROOT, "verifiable_consumer.stdout")
@@ -152,6 +153,7 @@ class VerifiableConsumer(BackgroundThreadService):
         self.event_handlers = {}
         self.global_position = {}
         self.global_committed = {}
+        self.path = create_path_resolver(self.context)
 
         for node in self.nodes:
             node.version = version
