@@ -14,20 +14,20 @@
 # limitations under the License.
 
 from ducktape.services.background_thread import BackgroundThreadService
-from kafkatest.directory_layout.kafka_path import create_path_resolver
+from kafkatest.directory_layout.kafka_path import KafkaPathResolverMixin
 
 
-class PerformanceService(BackgroundThreadService):
+class PerformanceService(KafkaPathResolverMixin, BackgroundThreadService):
 
     def __init__(self, context, num_nodes):
         super(PerformanceService, self).__init__(context, num_nodes)
         self.results = [None] * self.num_nodes
         self.stats = [[] for x in range(self.num_nodes)]
-        self.path = create_path_resolver(self.context)
 
     def clean_node(self, node):
         node.account.kill_process("java", clean_shutdown=False, allow_fail=True)
         node.account.ssh("rm -rf /mnt/*", allow_fail=False)
+
 
 def throughput(records_per_sec, mb_per_sec):
     """Helper method to ensure uniform representation of throughput data"""
