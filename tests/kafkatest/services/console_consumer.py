@@ -17,9 +17,8 @@ from ducktape.utils.util import wait_until
 from ducktape.services.background_thread import BackgroundThreadService
 
 from kafkatest.services.kafka.directory import kafka_dir
-from kafkatest.services.kafka.version import TRUNK, LATEST_0_8_2, LATEST_0_9
+from kafkatest.services.kafka.version import TRUNK, LATEST_0_8_2, LATEST_0_9, V_0_10_0_0
 from kafkatest.services.monitor.jmx import JmxMixin
-from kafkatest.services.security.security_config import SecurityConfig
 
 import itertools
 import os
@@ -184,9 +183,12 @@ class ConsoleConsumer(JmxMixin, BackgroundThreadService):
 
         # LoggingMessageFormatter was introduced after 0.9
         if node.version > LATEST_0_9:
-            cmd+=" --formatter kafka.tools.LoggingMessageFormatter"
+            cmd += " --formatter kafka.tools.LoggingMessageFormatter"
 
-        cmd += " --enable-systest-events"
+        # event output is available in 10.0.0 and later
+        if node.version >= V_0_10_0_0:
+            cmd += " --enable-systest-events"
+
         cmd += " 2>> %(stderr)s | tee -a %(stdout)s &" % args
         return cmd
 
