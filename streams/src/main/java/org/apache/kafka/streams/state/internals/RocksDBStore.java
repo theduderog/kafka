@@ -412,6 +412,8 @@ public class RocksDBStore<K, V> implements KeyValueStore<K, V> {
 
         // flush RocksDB
         flushInternal();
+
+        printStats();
     }
 
     /**
@@ -437,6 +439,16 @@ public class RocksDBStore<K, V> implements KeyValueStore<K, V> {
         wOptions = null;
         fOptions = null;
         db = null;
+    }
+
+    private void printStats() {
+        try {
+            long indexSize = this.db.getLongProperty("rocksdb.estimate-table-readers-mem");
+            long memTableSize = this.db.getLongProperty("rocksdb.cur-size-all-mem-tables");
+            System.out.println(String.format("RocksDB %s, Index size: %s, Memtable size: %s", name(), indexSize, memTableSize));
+        } catch (RocksDBException e) {
+            e.printStackTrace();
+        }
     }
 
     private static class RocksDbIterator<K, V> implements KeyValueIterator<K, V> {
