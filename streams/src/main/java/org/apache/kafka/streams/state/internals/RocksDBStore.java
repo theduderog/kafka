@@ -67,9 +67,9 @@ public class RocksDBStore<K, V> implements KeyValueStore<K, V> {
     private static final int DEFAULT_UNENCODED_CACHE_SIZE = 1000;
     private static final CompressionType COMPRESSION_TYPE = CompressionType.NO_COMPRESSION;
     private static final CompactionStyle COMPACTION_STYLE = CompactionStyle.UNIVERSAL;
-    private static final long WRITE_BUFFER_SIZE = 32 * 1024 * 1024L;
-    private static final long BLOCK_CACHE_SIZE = 100 * 1024 * 1024L;
-    private static final long BLOCK_SIZE = 4096L;
+    private static final long WRITE_BUFFER_SIZE = 8 * 1024 * 1024L;
+    private static final long BLOCK_CACHE_SIZE = 32 * 1024 * 1024L;
+    private static final long BLOCK_SIZE = 16384L;
     private static final int TTL_SECONDS = TTL_NOT_USED;
     private static final int MAX_WRITE_BUFFERS = 3;
     private static final String DB_FILE_DIR = "rocksdb";
