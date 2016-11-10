@@ -426,7 +426,7 @@ public class StreamPartitionAssignor implements PartitionAssignor, Configurable 
                 // the expected number of partitions is the max value of TaskId.partition + 1
                 int numPartitions = -1;
                 for (TaskId task : tasksByTopicGroup.get(topicGroupId)) {
-                    if (numPartitions < task.partition + 1)
+                    if (task != null && numPartitions < task.partition + 1)
                         numPartitions = task.partition + 1;
                 }
 
